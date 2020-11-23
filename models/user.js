@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     user.init({
         name: {
             type: DataTypes.STRING,
-            validatie: {
+            validate: {
                 len: {
                     args: [1,99],
                     msg: 'Name must be between 1 and 99 characters'
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         email: {
             type: DataTypes.STRING,
-            validatie: {
+            validate: {
                 isEmail: {
                     msg: 'Invalid email'
                 }
@@ -34,10 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING,
-            validatie: {
+            validate: {
                 len: {
-                    args: [12,99],
-                    msg: 'Password must be between 12 and 99 characters'
+                    args: [8,99],
+                    msg: 'Password must be between 8 and 99 characters'
                 }
             }
         }
@@ -50,11 +50,13 @@ module.exports = (sequelize, DataTypes) => {
             let hash = bcrypt.hashSync(pendingUser.password, 12)
             // Set password to the hash
             pendingUser.password = hash
+            console.log(pendingUser)
         })
 
         user.prototype.validPassword = function(passwordTyped) {
             // Compare what was typed with what is stored
             let correctPassword = bcrypt.compareSync(passwordTyped, this.password)
+            console.log('Inside of validPassword', correctPassword)
             // Return true or false based on match
             return correctPassword
         }
@@ -64,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             let userData = this.get()
             // Deletes password from request but not from database
             delete userData.password
+            console.log(userData)
             // Return userData without the password typed in
             return userData
         }
