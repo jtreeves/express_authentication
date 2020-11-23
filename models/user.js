@@ -47,3 +47,25 @@ module.exports = (sequelize, DataTypes) => {
   });
   return user;
 };
+
+user.addHook('beforeCreate', function(pendingUser) {
+    // Bcrypt hashes a password
+    let hash = bcrypt.hashSync(pendingUser.password, 12)
+    // Set password to the hash
+    pendingUser.password = hash
+})
+
+user.prototype.validPassword = function(passwordTyped) {
+    // Compare what was typed with what is stored
+    let correctPassword = bcrypt.compareSync(passwordTyped, this.password)
+    // Return true or false based on match
+    return correctPassword
+}
+
+// Remove password before it gets serialized
+user.prototype.toJSON = function() {
+    let userData = this.get()
+    // Deletes password from request but not from database
+    delete userData.password
+    return userData
+}
