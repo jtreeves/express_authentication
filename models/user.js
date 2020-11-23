@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcrypt') // Making a hash password for user
 const {
   Model
 } = require('sequelize');
@@ -14,9 +15,32 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   user.init({
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+    name: {
+        type: DataTypes.STRING,
+        validatie: {
+            len: {
+                args: [1,99],
+                msg: 'Name must be between 1 and 99 characters'
+            }
+        }
+    },
+    email: {
+        type: DataTypes.STRING,
+        validatie: {
+            isEmail: {
+                msg: 'Invalid email'
+            }
+        }
+    },
+    password: {
+        type: DataTypes.STRING,
+        validatie: {
+            len: {
+                args: [12,99],
+                msg: 'Password must be between 12 and 99 characters'
+            }
+        }
+    }
   }, {
     sequelize,
     modelName: 'user',
