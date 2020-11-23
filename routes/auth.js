@@ -41,4 +41,17 @@ router.post('/signup', (req, res) => {
     })
 })
 
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/auth/login',
+    successFlash: 'Welcome back',
+    failureFlash: 'Either email or password is incorrect. Please try again.'
+}))
+
+router.get('/logout', (req, res) => {
+    req.logout()
+    req.flash('success', 'Loggin out... See you soon!')
+    res.redirect('/')
+})
+
 module.exports = router
